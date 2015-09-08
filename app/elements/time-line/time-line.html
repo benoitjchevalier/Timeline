@@ -1,0 +1,81 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+
+<dom-module id="time-line">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      
+    </style>
+      <div style="margin-left: auto; margin-right: auto">
+        <time-legend config="{{config.legend}}"></time-legend>
+        <div style="clear:left">
+          <template is="dom-repeat" items="{{config.spans}}">
+            <time-span info="{{item}}" legendinfo="{{config.legend}}" index="{{index}}" totaltime="{{duration}}" totalwidth="{{length}}" class="paper-font-body1"></time-span>
+          </template>
+        </div>
+      </div>   
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'time-line',
+
+      properties: {
+        config: {
+          type: Object,
+          observer: '_configReady'
+        },
+        duration: {
+          type: Number,
+          computed: 'computeDuration(config)'
+        },
+        length: {
+          type: Number,
+        }
+      },
+      ready: function() {
+        // `ready` is called after all elements have been configured, but
+        // propagates bottom-up. This element's children are ready, but parents
+        // are not.
+        //
+        // This is the point where you should make modifications to the DOM (when
+        // necessary), or kick off any processes the element wants to perform.
+
+      },
+
+      attached: function() {
+        //if we don't have a spcific length specified try to fit parent
+        if(!this.length) {
+          this.length = this.getBoundingClientRect().width;
+        }      
+      },
+      computeDuration: function(config) {
+         var start = new Date(config.spans[0].from),
+            stop = new Date(config.spans[config.spans.length -1].to);
+
+          return stop - start;
+      },
+      _configReady: function(newValue, oldValue) {
+        for(var i=0; i<this.config.legend.length; i++) {
+          var j = 3;
+          //this.shadowRoot.querySelector('.' + this.config.legend[i].type).style.background-color = this.config.legend[i].color;
+        }
+      }
+    });
+  })();
+  </script>
+</dom-module>

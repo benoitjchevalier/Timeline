@@ -1,0 +1,146 @@
+{
+    "legend": [
+        {
+            "type": "education",
+            "color": "rgba(0,255,0,0.2)"
+        },
+        {
+            "type": "work",
+            "color": "rgba(0,0,153,0.2)"
+        },
+        {
+            "type": "internship",
+            "color": "rgba(0,255,255,0.2)"
+        },
+        {
+            "type": "misc",
+            "color": "rgba(255,0,0,0.2)"
+        }
+    ],
+    "spans": [
+        {
+            "from": "2007-07-01",
+            "to": "2009-07-01",
+            "title": "Third and fourth year of Master's degree",
+            "workplace": "CPE Lyon",
+            "location": "Lyon, France",
+            "img": {
+                "src": "../../images/cpe.jpg",
+                "height": 90,
+                "width": 140
+            },
+            "paragraph": "Majors: <ul><li>Microprocessors system</li><li>programming in C/C++/Matlab</li><li>files and databases</li><li>operating systems and concurrent programming</li><li>networks and protocols</li></ul>With: applied mathematics, probability. <br>Options: <ul><li>Graphs and algorithms</li><li>basis of video games</li><li>compilation techniques</li><li>networks and systems administration</li></ul>",
+            "worktype": "education"
+        },
+        {
+            "from": "2009-07-01",
+            "to": "2010-07-01",
+            "title": "Intern Software Developer",
+            "workplace": "Delcam Plc",
+            "location": "Birmingham, UK",
+            "img": {
+                "src": "../../images/delcam.jpg",
+                "height": 60,
+                "width": 200
+            },
+            "paragraph": "Working on a global leader CADCAM software using mostly C++, C# (.NET), Javascript/VBScript",
+            "worktype": "internship"
+        },
+        {
+            "from": "2010-07-01",
+            "to": "2010-09-01",
+            "title": "Holiday",
+            "workplace": "",
+            "location": "",
+            "img": {
+                "src": "",
+                "height": 0,
+                "width": 0
+            },
+            "paragraph": "",
+            "worktype": "misc"
+        },
+        {
+            "from": "2010-09-01",
+            "to": "2011-02-01",
+            "title": "Erasmus exchange",
+            "workplace": "Hull University",
+            "location": "Hull, UK",
+            "img": {
+                "src": "../../images/hull.png",
+                "height": 60,
+                "width": 215
+            },
+            "paragraph": "Computer science department, majors: <ul><li>Real-time graphics programming</li><li>advanced software engineering</li><li>object oriented design using C#</li></ul>",
+            "worktype": "education"
+        },
+        {
+            "from": "2011-02-01",
+            "to": "2011-09-01",
+            "title": "End of study project",
+            "workplace": "Fugro Intersite",
+            "location": "Leidschendam, Netherlands",
+            "img": {
+                "src": "../../images/fugro.jpg",
+                "height": 77,
+                "width": 107
+            },
+            "paragraph": "Planning, conceiving and developing an application capable of various interference measures using C# .NET (4.0), MySQL, NUnit. Only software developer on this project.",
+            "worktype": "internship"
+        },
+        {
+            "from": "2011-09-01",
+            "to": "2011-11-01",
+            "title": "Graduation/Job search",
+            "img": {
+                "src": "",
+                "height": 0,
+                "width": 0
+            },
+            "paragraph": "",
+            "worktype": "misc"
+        },
+        {
+            "from": "2011-11-01",
+            "to": "2012-09-01",
+            "title": "Software Engineer",
+            "workplace": "Open",
+            "location": "Lyon, France",
+            "img": {
+                "src": "../../images/open.jpg",
+                "height": 57,
+                "width": 155
+            },
+            "paragraph": "Maintaining a software at SNCF (French railway company), using C# .NET and databases. Working on a new project of an internal website using ASP .NET",
+            "worktype": "work"
+        },
+        {
+            "from": "2012-09-01",
+            "to": "2014-09-01",
+            "title": "Edison Engineering Development Program",
+            "workplace": "GE Digital Energy",
+            "location": "Cambridge, Livingston, UK",
+            "img": {
+                "src": "../../images/ge.png",
+                "height": 75,
+                "width": 75
+            },
+            "paragraph": "Two years graduate program in software. Work done during the four six months rotations includes but is not limited to: <ul><li>Contributed to the IIDS (now IIDX) by developing the mapping component in conjunction with the technical leader (two front-end developers).</li><li>Used the IIDX to develop a proof of concept for the Edison B-course project. The project aimed at allowing the user to create custom dashboards in order to visualize large amount of historical data (electrical equipment data). Single-handedly developed the front-end (JavaScript/CSS/HTML5), project has been very well received and has attracted customer funding already.</li><li>Working on leading ADMS (see above)</li></ul>",
+            "worktype": "work"
+        },
+        {
+            "from": "2014-09-01",
+            "to": "2015-09-05",
+            "title": "Software Engineer",
+            "workplace": "GE Digital Energy",
+            "location": "Livingston, UK",
+            "img": {
+                "src": "../../images/ge.png",
+                "height": 75,
+                "width": 75
+            },
+            "paragraph": "Continuity of the last Edison rotation, working on leading ADMS (Advanced Distribution Management System) as part of a two developers/two designers UX team. Large scale project, various development done using C/C++, Oracle SQL but mainly C# (with DevExpress third party) in order to add advanced UI (User Interface) features while considering UX (User Experience). ",
+            "worktype": "work"
+        }
+    ]
+}

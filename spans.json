@@ -1,0 +1,25 @@
+{
+    "Series": [
+        {
+            "from": "24-02-1988",
+            "to": "22-02-1992",
+            "title": "",
+            "img": "",
+            "paragraph": "paragraph"
+        },
+        {
+            "from": "24-02-1992",
+            "to": "22-06-2000",
+            "title": "",
+            "img": "",
+            "paragraph": "paragraph"
+        },
+        {
+            "from": "11/02/2000",
+            "to": "11/02/2014",
+            "title": "",
+            "img": "",
+            "paragraph": "paragraph"
+        }
+    ]
+}

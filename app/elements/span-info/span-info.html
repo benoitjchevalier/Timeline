@@ -1,0 +1,190 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="..\..\bower_components/polymer/polymer.html">
+<link rel="import" href="..\..\bower_components/neon-animation/neon-animation.html">
+
+<dom-module id="span-info">
+  <template>
+    <style>
+      :host {
+        border-radius:5px;
+        box-shadow:1px 1px 3px gray;
+        border: 1px solid;
+        height: auto;
+        position: absolute;
+        max-width: 600px;
+        float:left;
+        background-color: #FFFFFF;
+        display: block;
+      }
+      .floating-container {
+        padding: 10px;
+      }
+      .title {
+        line-height: 30px;
+        margin-bottom: 5px;
+      }
+      .logo {
+        position: relative;
+        display: inline-block;
+        float: left;
+      }
+      .paragraph {
+        clear:both;
+        padding: 5px;
+      }
+      .durationTitle {
+        float: left;
+        margin-top: 0px;
+        margin-bottom: 20px;
+      }
+      .clear {
+        clear: both;
+      }
+      .top {
+        display: inline-block;
+        width: 100%;
+        line-height: 15px;
+      }
+      
+    </style>
+    <div class="floating-container">
+      <div>
+        <div>
+          
+          <h1 class="title clear">{{info.title}}</h1>
+          <div class="top">
+            <h4 class="durationTitle">{{readableFrom}}</h3>
+            <h4 class="durationTitle">{{readableDuration}}</h3>
+            <h4 class="durationTitle">{{readableTo}}</h3>
+          </div>
+        </div>
+        <div class="clear">
+          <img class="logo" hidden$="{{!info.img.src}}" src="{{info.img.src}}" height="{{info.img.height}}" width="{{info.img.width}}"></img>
+          <div hidden$="{{!info.workplace}}" class="location">{{info.workplace}}</div>
+          <div hidden$="{{!info.location}}">{{info.location}}</div>
+        </div>
+      </div>
+      <div id="paragraph" class="paragraph">{{info.paragraph}}</div>
+    </div>
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'span-info',
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      properties: {
+        info: {
+          type: Object,
+          notify: true,
+          observer: '_infoChanged'
+        },
+        opened: Boolean,
+        readableFrom: {
+          type: String,
+          computed: '_computeReadableFrom(info)'
+        },
+        readableTo: {
+          type: String,
+          computed: '_computeReadableTo(info)'
+        },
+        readableDuration: {
+          type: String,
+          computed: '_computeReadableDuration(info)'
+        },
+        animationConfig: {
+          value: function() {
+            return {
+              'fadein': [{
+                name: 'fade-in-animation',
+                node: this,
+                timing: {delay: 100}
+              },
+              {
+                name: 'slide-down-animation',
+                node: this
+              }],
+              'fadeout': [{
+                name: 'fade-out-animation',
+                node: this
+              },
+              {
+                name: 'slide-up-animation',
+                node: this,
+                timing: {delay: 100}
+              }]
+            }
+          }
+        }
+      },
+
+
+      listeners: {
+        'neon-animation-finish': '_animFinished'
+      },
+
+
+      attached: function() {
+       
+        this.style.display = 'none';
+      },
+
+      //can't seem to get neon animation to maintain final value and manually setting opacity/
+      //display seems to cock things up. Need to use CSS animation for now.
+      show: function() {
+        if(!this.opened) {
+          this.opened = true;
+          this.style.display = 'inline-block';
+         // this.playAnimation('fadein');
+        }
+      },
+      hide: function() {
+        if(this.opened) {
+          this.opened = false;
+          this.style.display = 'none';
+         // this.playAnimation('fadeout');
+        }
+      },
+
+      _animFinished: function() {
+        if(!this.opened) {
+          this.style.display = 'none';
+          this.style.opacity = 0;
+        }
+        else {
+          this.style.opacity = 1;
+          this.style.display = 'inline-block';
+        }
+      },
+      _infoChanged: function(newValue, oldValue) {
+        this.$.paragraph.innerHTML = newValue.paragraph;
+      },
+      _computeReadableFrom: function(info) {
+        return new Date(info.from).toLocaleDateString();
+      },
+      _computeReadableTo: function(info) {
+        return new Date(info.to).toLocaleDateString();
+      },
+      _computeReadableDuration: function(info) {
+        //count every month started, that's precise enough for what we want
+        var from = new Date(info.from),
+            to = new Date(info.to);
+
+        return '- (' + ((12 * (to.getFullYear() - from.getFullYear())) + (to.getMonth() - from.getMonth())) + ' months) -';
+      }
+    });
+  })();
+  </script>
+</dom-module>
