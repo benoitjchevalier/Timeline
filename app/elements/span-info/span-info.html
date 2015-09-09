@@ -11,6 +11,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="..\..\bower_components/polymer/polymer.html">
 <link rel="import" href="..\..\bower_components/neon-animation/neon-animation.html">
 
+<!--
+Span info, "popup" showing under a time-span, containing appropriate information related to said 
+timespan: duration, title, image, location and some description (paragraph)
+##### Usage
+    <span-info info="infoObject"></span-info>
+
+    infoObject format:
+          {
+            "from": "2009-07-01",
+            "to": "2010-07-01",
+            "title": "Intern Software Developer",
+            "workplace": "Delcam Plc",
+            "location": "Birmingham, UK",
+            "img": {
+                "src": "../../images/delcam.jpg",
+                "height": 60,
+                "width": 200
+            },
+            "paragraph": "Working on a global leader CADCAM software using mostly C++, C# (.NET), Javascript/VBScript",
+            "worktype": "internship"
+        }
+-->
+
 <dom-module id="span-info">
   <template>
     <style>
@@ -81,6 +104,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     Polymer({
       is: 'span-info',
+
+      //======================
+      // PROPS
+      //======================
       properties: {
         //Object holding appropriate info to be displayed: image, text, title....
         info: {
@@ -107,15 +134,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      //======================
+      // LIFE CYCLE
+      //======================
       attached: function() {
        
         this.style.display = 'none';
       },
 
-      //can't seem to get neon animation to maintain final value and manually setting opacity/
-      //display seems to cock things up. Need to use CSS animation for now.
+      //======================
+      // "PUBLIC" FUNCTIONS
+      //======================
+      //does what it says on the tin
       show: function() {
         if(!this.opened) {
+          //Can't seem to get neon animation to do what I want for now, use web animations
           var fadeIn = new SequenceEffect([
                  new KeyframeEffect(this, [{opacity: 0}, {opacity: 1}], {
                      duration: 200,
@@ -124,17 +157,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               ]);
           this.opened = true;
           this.style.display = 'inline-block';
-
-         var animPlayer = document.timeline.play(fadeIn);
+          document.timeline.play(fadeIn);
         }
       },
+      //does what it says on the tin
       hide: function() {
         if(this.opened) {
+          var fadeOut = new SequenceEffect([
+                 new KeyframeEffect(this, [{opacity: 1}, {opacity: 0}], {
+                     duration: 200,
+                     fill: 'forwards'
+                 })
+              ]);
           this.opened = false;
-          this.style.display = 'none';
+          var element = this;
+
+          document.timeline.play(fadeOut).onfinish = function() {
+            element.style.display = 'none';
+          };
         }
       },
 
+      //======================
+      // HANDLERS, COMPUTE
+      //======================
       _infoChanged: function(newValue, oldValue) {
         this.$.paragraph.innerHTML = newValue.paragraph;
       },

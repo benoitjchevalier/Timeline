@@ -10,6 +10,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="..\..\bower_components/polymer/polymer.html">
 
+<!--
+Simple timeline legend, horizontally aligned list of colorbox + text
+##### Usage
+    <time-legend config="configObject"></time-legend>
+
+    configObject format:
+            [
+              {
+                  "type": "education",
+                  "color": "rgba(0,255,0,0.2)"
+              },
+              {
+                  "type": "work",
+                  "color": "rgba(0,0,153,0.2)"
+              },
+              {
+                  "type": "internship",
+                  "color": "rgba(0,255,255,0.2)"
+              },
+              {
+                  "type": "misc",
+                  "color": "rgba(255,0,0,0.2)"
+              }
+          ]
+-->
+
 <dom-module id="time-legend">
   <template>
     <style>
@@ -21,7 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         height:40px;
       }
     </style>
-    <div on-click='test' id="legend" class="legend">
+    <div on-click="test" id="legend" class="legend">
       <template is="dom-repeat" items="{{config}}">
         <legend-element description="{{item.type}}" color="{{item.color}}"></legend-element>
       </template>
@@ -34,20 +60,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'time-legend',
 
+      //======================
+      // PROPS
+      //======================
       properties: {
+        //config object: array of type and color
         config: {
           type: Object,
-          notify: true,
-          observer: 'test'
+          notify: true
         }
       },
-
-      attached: function() {
-        console.log('attached: '  + this.shadowRoot);
-      },
-      test: function() {
-        console.log('test: '  + this.root);
-      }
     });
   })();
   </script>

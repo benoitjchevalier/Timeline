@@ -10,25 +10,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="..\..\bower_components/polymer/polymer.html">
 
+<!--
+Time span, represents a slice of time on a time-line. Draws a small timeline with years and months ticks, year text and vertical lines at the beginning and end. Contains a span-info shown on click or hover.
+##### Usage
+    <time-span info="infoObject" legendinfo="legendInfoObject" index="index" totaltime="duration" totalwidth="length"></time-span>
+
+    legendInfoObject format:
+           [
+              {
+                  "type": "education",
+                  "color": "rgba(0,255,0,0.2)"
+              },
+              {
+                  "type": "work",
+                  "color": "rgba(0,0,153,0.2)"
+              },
+              {
+                  "type": "internship",
+                  "color": "rgba(0,255,255,0.2)"
+              },
+              {
+                  "type": "misc",
+                  "color": "rgba(255,0,0,0.2)"
+              }
+          ]
+
+    infoObject format:
+          {
+            "from": "2009-07-01",
+            "to": "2010-07-01",
+            "title": "Intern Software Developer",
+            "workplace": "Delcam Plc",
+            "location": "Birmingham, UK",
+            "img": {
+                "src": "../../images/delcam.jpg",
+                "height": 60,
+                "width": 200
+            },
+            "paragraph": "Working on a global leader CADCAM software using mostly C++, C# (.NET), Javascript/VBScript",
+            "worktype": "internship"
+        }
+
+    totalwidth is the lentgh of the whole timeline (provided by time-line)
+
+    totaltime is the total duration of the timeline
+
+    index is the index of the time-span within the time-line
+-->
+
 <dom-module id="time-span">
   <template>
     <style>
       :host {
         display: block;
         float: left;
-        
       }
       #drawingBoard {
-
-        transition:             width 400ms, height 200ms, border-radius 200ms,left 200ms, top 200ms, background-color 400ms;
-      -moz-transition:    width 400ms, height 200ms, border-radius 200ms,left 200ms, top 200ms, background-color 400ms;
-      -ms-transition:     width 400ms, height 200ms, border-radius 200ms,left 200ms, top 200ms, background-color 400ms;
-      -o-transition:      width 400ms, height 200ms, border-radius 200ms,left 200ms, top 200ms, background-color 400ms;
-      -webkit-transition: width 400ms, height 200ms, border-radius 200ms,left 200ms, top 200ms, background-color 400ms;
+        transition:         background-color 400ms;
+        -moz-transition:    background-color 400ms;
+        -ms-transition:     background-color 400ms;
+        -o-transition:      background-color 400ms;
+        -webkit-transition: background-color 400ms;
         cursor: pointer;
       } 
       #drawingBoard:hover {
-        
         background-color: #5CACFF;
       }    
     </style>
@@ -42,6 +87,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'time-span',
 
+      //======================
+      // PROPS
+      //======================
       properties: {
         info: {
           type: Object,
@@ -52,12 +100,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           notify: true
         },
-        totaltime: {
-          type: Number
-        },
-        totalwidth: {
-          type: Number
-        },
+        totaltime: Number,
+        totalwidth: Number,
         desiredlength: {
           type: Number,
           computed: 'computedesiredlength(totaltime, totalwidth, info)'
@@ -73,22 +117,129 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       //===============
-      //LIFE CYCLE
+      // LIFE CYCLE
       //===============
-      ready: function() {
-      },
-
       attached: function() {
 
         this.redraw();
-        this.$.drawingBoard.style['background-color']= this.defaultcolor;
-      },
-
-      detached: function() {
+        this.$.drawingBoard.style['background-color'] = this.defaultcolor;
       },
 
       //===============
-      //MOUSE HANDLERS
+      // Element Behavior
+      //===============
+      redraw: function() {
+        if(!!this.info && !!this.info.from && !!this.info.to) {
+          var start, end, canvas, allYears, startYear, endYear, i, oneYear, oneMonth;
+          canvas = this.$.drawingBoard;
+          canvas.width = this.desiredlength;
+
+          start = new Date(this.info.from);
+          end = new Date(this.info.to);
+          startYear = start.getUTCFullYear();
+          endYear = end.getUTCFullYear();
+
+          //UTC is 1 jan 1970
+          oneYear = Date.UTC(1971,0,1);
+          oneMonth = oneYear/12;
+
+          //draw every year for now
+          allYears = [];
+
+          for(i=0; i < endYear - startYear; i++) {
+            allYears[i] = startYear + i;
+          }
+
+          var ctx, totalTime, timePerPix, halfHeight, yearTickHeight, xOffset, x, yearTextDistance, monthTickHeight;
+          ctx = canvas.getContext('2d');
+          totalTime = end.getTime() - start.getTime();
+          timePerPix = totalTime / canvas.width;
+          halfHeight = canvas.height/2;
+          yearTickHeight = 6;
+          monthTickHeight = 3;
+          yearTextDistance = 10;
+          ctx.font = '10pt Tahoma';
+          ctx.textAlign = 'center';
+
+          //draw the middle line
+          ctx.beginPath();
+          ctx.moveTo(0,halfHeight);
+          ctx.lineTo(canvas.width, halfHeight);
+
+          //draw "boxing bounds"
+          if(this.index === 0) {
+            //left limit
+            ctx.moveTo(0,0);
+            ctx.lineTo(0, canvas.height);
+          }
+          //right limit
+          ctx.moveTo(canvas.width,0);
+          ctx.lineTo(canvas.width, canvas.height);
+
+          //draw each tick. 
+          //Figure out first tick
+          xOffset = (Date.UTC(startYear + 1, 0, 1) - Date.UTC(start.getUTCFullYear(), start.getMonth(), start.getDate())) / timePerPix;
+
+          ctx.stroke();
+
+          //draw the rest of the ticks, -1 to account for first year not drawn 
+          for(i=-1; i<endYear - startYear + 1; i++) {
+
+            //set color
+            ctx.beginPath();
+            ctx.strokeStyle = '#000000';
+
+            x = xOffset + oneYear * i / timePerPix;
+            ctx.moveTo(x, halfHeight - yearTickHeight);
+            ctx.lineTo(x, halfHeight + yearTickHeight);
+            ctx.fillText(startYear + i + 1, x, halfHeight + yearTickHeight + yearTextDistance );
+
+            ctx.stroke();
+
+            //draw months
+            var subX = x;
+            for(var j=1; j<12; j++) {
+
+              //change color
+              ctx.beginPath();
+              ctx.strokeStyle = '#585858';
+
+              //start with feb
+              subX = subX + oneMonth / timePerPix;
+              ctx.moveTo(subX, halfHeight - monthTickHeight);
+              ctx.lineTo(subX, halfHeight + monthTickHeight);
+              ctx.stroke();
+            }
+          }
+
+          
+        }
+      },
+
+      //===============
+      // COMPUTE VALUES
+      //===============
+      computedesiredlength: function(totaltime, totalwidth, info) {
+        var start = new Date(info.from),
+          end = new Date(info.to),
+          length = ((end - start)/totaltime) * totalwidth;
+
+          return length;
+      },
+      computecolor: function(legendinfo, info) {
+        var def = '#FFFFFF';
+
+        for(var i=0; i<legendinfo.length; i++) {
+          if(legendinfo[i].type === info.worktype) {
+            return legendinfo[i].color;
+          }
+        }
+
+        return def;
+      },
+
+      //===============
+      // MOUSE HANDLERS
       //===============
       onHover: function() {
         if(!this.clicked) {
@@ -111,122 +262,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      //===============
-      // Element Behavior
-      //===============
-      redraw: function() {
-        if(!!this.info && !!this.info.from && !!this.info.to) {
-          var start, end, canvas, allYears, startYear, endYear, i, host, oneYear, oneMonth;
-          canvas = this.$.drawingBoard;
-          canvas.width = this.desiredlength;
-
-          start = new Date(this.info.from);
-          end = new Date(this.info.to);
-          startYear = start.getUTCFullYear();
-          endYear = end.getUTCFullYear();
-
-          //UTC is 1 jan 1970
-          oneYear = Date.UTC(1971,0,1);
-          oneMonth = oneYear/12;
-
-          //draw every year for now
-          allYears = [];
-
-          for(i=0; i < endYear - startYear; i++) {
-            allYears[i] = startYear + i;
-          }
-
-          var ctx, totalTime, timePerPix, halfHeight, yearTickHeight, xOffset, x, yearTextDistance, monthTickHeight;
-          ctx = canvas.getContext("2d");
-          totalTime = end.getTime() - start.getTime();
-          timePerPix = totalTime / canvas.width;
-          halfHeight = canvas.height/2;
-          yearTickHeight = 6;
-          monthTickHeight = 3;
-          yearTextDistance = 10;
-          ctx.font = '10pt Tahoma';
-          ctx.textAlign = 'center'
-
-          //draw the middle line
-          ctx.beginPath();
-          ctx.moveTo(0,halfHeight);
-          ctx.lineTo(canvas.width, halfHeight);
-
-          //draw "boxing bounds"
-          if(this.index == 0) {
-            //left limit
-            ctx.moveTo(0,0);
-            ctx.lineTo(0, canvas.height);
-          }
-          //right limit
-          ctx.moveTo(canvas.width,0);
-          ctx.lineTo(canvas.width, canvas.height);
-
-          //draw each tick. 
-          //Figure out first tick
-          xOffset = (Date.UTC(startYear + 1, 0, 1) - Date.UTC(start.getUTCFullYear(), start.getMonth(), start.getDate())) / timePerPix;
-
-          ctx.stroke();
-
-          //draw the rest of the ticks, -1 to account for first year not drawn 
-          for(i=-1; i<endYear - startYear + 1; i++) {
-
-            //set color
-            ctx.beginPath();
-            ctx.strokeStyle="#000000"
-
-            x = xOffset + oneYear * i / timePerPix;
-            ctx.moveTo(x, halfHeight - yearTickHeight);
-            ctx.lineTo(x, halfHeight + yearTickHeight);
-            ctx.fillText(startYear + i + 1, x, halfHeight + yearTickHeight + yearTextDistance );
-
-            ctx.stroke();
-
-            //draw months
-            var subX = x;
-            for(var j=1; j<12; j++) {
-
-              //change color
-              ctx.beginPath();
-              ctx.strokeStyle="#585858";
-
-              //start with feb
-              subX = subX + oneMonth / timePerPix;
-              ctx.moveTo(subX, halfHeight - monthTickHeight);
-              ctx.lineTo(subX, halfHeight + monthTickHeight);
-              ctx.stroke();
-            }
-          }
-
-          
-        }
-      },
-
-      //===============
-      //COMPUTE VALUES
-      //===============
-      computedesiredlength: function(totaltime, totalwidth, info) {
-        var start = new Date(info.from),
-          end = new Date(info.to),
-          length = ((end - start)/totaltime) * totalwidth;
-
-          return length;
-      },
-      computecolor: function(legendinfo, info) {
-        var def = "#FFFFFF";
-
-        for(var i=0; i<legendinfo.length; i++) {
-          if(legendinfo[i].type === info.worktype) {
-            return legendinfo[i].color;
-          }
-        }
-
-        return def;
-      },
-
 
       //====================
-      //"PRIVATE" functions
+      // "PRIVATE" functions
       //====================
       showInfo: function() {
         this.$.info.show();

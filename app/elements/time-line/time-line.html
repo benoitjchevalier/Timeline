@@ -10,6 +10,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="..\..\bower_components/polymer/polymer.html">
 
+<!--
+Time line, main components to be used in an app. Draws a time-line made of different time-span each containing information on that time span
+##### Usage
+    <time-line config="configObject" length="length"></time-line>
+
+    configObject format:
+           {
+              "legend": [
+                  {
+                      "type": "education",
+                      "color": "rgba(0,255,0,0.2)"
+                  },
+                  ...
+              ],
+              "spans": [
+                  {
+                      "from": "2007-07-01",
+                      "to": "2009-07-01",
+                      "title": "Third and fourth year of Master's degree",
+                      "workplace": "CPE Lyon",
+                      "location": "Lyon, France",
+                      "img": {
+                          "src": "../../images/cpe.jpg",
+                          "height": 90,
+                          "width": 140
+                      },
+                      "paragraph": "Majors: <ul><li>Microprocessors system</li><li>programming in C/C++/Matlab</li><li>files and databases</li><li>operating systems and concurrent programming</li><li>networks and protocols</li></ul>With: applied mathematics, probability. <br>Options: <ul><li>Graphs and algorithms</li><li>basis of video games</li><li>compilation techniques</li><li>networks and systems administration</li></ul>",
+                      "worktype": "education"
+                  },
+                  ...
+                ]
+            }
+
+
+    length is optional and defines the total length of the timeline (px). If not defined the timeline will
+    try to fit its container. Defining a length helps defining a "resolution" in order to avoid unreadable
+    timelines on small devices, time-spans will wrap on small devices, hence making the timeline display on several rows
+-->
+
 <dom-module id="time-line">
   <template>
     <style>
@@ -22,7 +61,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <time-legend config="{{config.legend}}"></time-legend>
         <div style="clear:left">
           <template is="dom-repeat" items="{{config.spans}}">
-            <time-span info="{{item}}" legendinfo="{{config.legend}}" index="{{index}}" totaltime="{{duration}}" totalwidth="{{length}}" class="paper-font-body1"></time-span>
+            <time-span info="{{item}}" legendinfo="{{config.legend}}" index="{{index}}" totaltime="{{duration}}" totalwidth="{{length}}" ></time-span>
           </template>
         </div>
       </div>   
@@ -34,46 +73,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'time-line',
 
+      //======================
+      // PROPS
+      //======================
       properties: {
-        config: {
-          type: Object,
-          observer: '_configReady'
-        },
+        config: Object,
+        length: Number,
         duration: {
           type: Number,
           computed: 'computeDuration(config)'
         },
-        length: {
-          type: Number,
-        }
-      },
-      ready: function() {
-        // `ready` is called after all elements have been configured, but
-        // propagates bottom-up. This element's children are ready, but parents
-        // are not.
-        //
-        // This is the point where you should make modifications to the DOM (when
-        // necessary), or kick off any processes the element wants to perform.
-
       },
 
+      //===============
+      // LIFE CYCLE
+      //===============
       attached: function() {
         //if we don't have a spcific length specified try to fit parent
         if(!this.length) {
           this.length = this.getBoundingClientRect().width;
         }      
       },
+
+      //======================
+      // HANDLERS, COMPUTE
+      //======================
       computeDuration: function(config) {
          var start = new Date(config.spans[0].from),
             stop = new Date(config.spans[config.spans.length -1].to);
 
           return stop - start;
-      },
-      _configReady: function(newValue, oldValue) {
-        for(var i=0; i<this.config.legend.length; i++) {
-          var j = 3;
-          //this.shadowRoot.querySelector('.' + this.config.legend[i].type).style.background-color = this.config.legend[i].color;
-        }
       }
     });
   })();

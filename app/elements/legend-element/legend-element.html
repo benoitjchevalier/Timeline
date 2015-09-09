@@ -44,12 +44,19 @@ Simple legend element, one colored box followed by a description
     Polymer({
       is: 'legend-element',
 
+      //======================
+      // PROPS
+      //======================
       properties: {
         //Text to be used by the element
         description: String,
         //Color used in the box
         color: String
       },
+
+      //======================
+      // LIFE CYCLE
+      //======================
       ready: function() {
         //style the box
         this.$.box.style.backgroundColor =  this.color;
