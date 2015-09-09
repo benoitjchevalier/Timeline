@@ -10,6 +10,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="..\..\bower_components/polymer/polymer.html">
 
+<!--
+Simple legend element, one colored box followed by a description
+##### Usage
+    <legend-element color="boxColor" description="legendDescription"></legend-element>
+-->
+
 <dom-module id="legend-element">
   <template>
     <style>
@@ -24,7 +30,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       .description {
         float:left;
-
         margin-left: 5px;
         margin-right: 5px;
         margin-top:7px;
@@ -40,16 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'legend-element',
 
       properties: {
-        description: {
-          type: String,
-          notify: true
-        },
-        color: {
-          type: String
-        }
+        //Text to be used by the element
+        description: String,
+        //Color used in the box
+        color: String
       },
       ready: function() {
-        //why did I have to go so deep just to be able to change the color of those elements ?
+        //style the box
         this.$.box.style.backgroundColor =  this.color;
       }
     });
