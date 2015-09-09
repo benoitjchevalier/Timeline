@@ -59,7 +59,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <div class="floating-container">
       <div>
         <div>
-          
           <h1 class="title clear">{{info.title}}</h1>
           <div class="top">
             <h4 class="durationTitle">{{readableFrom}}</h3>
@@ -82,59 +81,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     Polymer({
       is: 'span-info',
-      behaviors: [
-        Polymer.NeonAnimationRunnerBehavior
-      ],
       properties: {
+        //Object holding appropriate info to be displayed: image, text, title....
         info: {
           type: Object,
           notify: true,
           observer: '_infoChanged'
         },
+        //current state: closed or opened
         opened: Boolean,
+        //Computed readable "from" string
         readableFrom: {
           type: String,
           computed: '_computeReadableFrom(info)'
         },
+         //Computed readable "to" string
         readableTo: {
           type: String,
           computed: '_computeReadableTo(info)'
         },
+         //Computed readable "duration" string
         readableDuration: {
           type: String,
           computed: '_computeReadableDuration(info)'
-        },
-        animationConfig: {
-          value: function() {
-            return {
-              'fadein': [{
-                name: 'fade-in-animation',
-                node: this,
-                timing: {delay: 100}
-              },
-              {
-                name: 'slide-down-animation',
-                node: this
-              }],
-              'fadeout': [{
-                name: 'fade-out-animation',
-                node: this
-              },
-              {
-                name: 'slide-up-animation',
-                node: this,
-                timing: {delay: 100}
-              }]
-            }
-          }
         }
       },
-
-
-      listeners: {
-        'neon-animation-finish': '_animFinished'
-      },
-
 
       attached: function() {
        
@@ -145,29 +116,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //display seems to cock things up. Need to use CSS animation for now.
       show: function() {
         if(!this.opened) {
+          var fadeIn = new SequenceEffect([
+                 new KeyframeEffect(this, [{opacity: 0}, {opacity: 1}], {
+                     duration: 200,
+                     fill: 'forwards'
+                 })
+              ]);
           this.opened = true;
           this.style.display = 'inline-block';
-         // this.playAnimation('fadein');
+
+         var animPlayer = document.timeline.play(fadeIn);
         }
       },
       hide: function() {
         if(this.opened) {
           this.opened = false;
           this.style.display = 'none';
-         // this.playAnimation('fadeout');
         }
       },
 
-      _animFinished: function() {
-        if(!this.opened) {
-          this.style.display = 'none';
-          this.style.opacity = 0;
-        }
-        else {
-          this.style.opacity = 1;
-          this.style.display = 'inline-block';
-        }
-      },
       _infoChanged: function(newValue, oldValue) {
         this.$.paragraph.innerHTML = newValue.paragraph;
       },
