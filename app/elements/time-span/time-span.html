@@ -182,7 +182,7 @@ Time span, represents a slice of time on a time-line. Draws a small timeline wit
 
           ctx.stroke();
 
-          //draw the rest of the ticks, -1 to account for first year not drawn 
+          //draw the rest of the ticks, -1 to account for first year not drawn (in case right bits of the year needs to be displayed)
           for(i=-1; i<endYear - startYear + 1; i++) {
 
             //set color
@@ -211,8 +211,6 @@ Time span, represents a slice of time on a time-line. Draws a small timeline wit
               ctx.stroke();
             }
           }
-
-          
         }
       },
 
@@ -227,19 +225,20 @@ Time span, represents a slice of time on a time-line. Draws a small timeline wit
           return length;
       },
       computecolor: function(legendinfo, info) {
-        var def = '#FFFFFF';
+        var result = '#FFFFFF';
 
-        for(var i=0; i<legendinfo.length; i++) {
-          if(legendinfo[i].type === info.worktype) {
-            return legendinfo[i].color;
+        legendinfo.forEach((cur) => {
+          if(cur.type === info.worktype) {
+            result = cur.color;
+            return;
           }
-        }
+        });
 
-        return def;
+        return result;
       },
 
       //===============
-      // MOUSE HANDLERS
+      // HANDLERS
       //===============
       onHover: function() {
         if(!this.clicked) {

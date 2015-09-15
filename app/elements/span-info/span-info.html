@@ -170,10 +170,9 @@ timespan: duration, title, image, location and some description (paragraph)
                  })
               ]);
           this.opened = false;
-          var element = this;
 
-          document.timeline.play(fadeOut).onfinish = function() {
-            element.style.display = 'none';
+          document.timeline.play(fadeOut).onfinish = () => {
+            this.style.display = 'none';
           };
         }
       },
